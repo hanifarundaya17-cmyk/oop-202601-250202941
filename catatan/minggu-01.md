@@ -16,4 +16,4 @@ ketika menguji script ada kendala yaitu eror dikarenakan polities belum terbuka
 - Bagian yang dibantu AI: script error
 - Prompt utama: bagian tulisan berwarna merah di copy
 - Yang saya ubah atau tolak dari saran AI, dan alasannya: tidak ada yang diubah cuma membuka polities
-- Satu hal yang saya pahami lebih baik sekarang: tentang pengujian script
+- Satu hal yang saya pahami lebih baik sekarang: tentang pengujian script.
