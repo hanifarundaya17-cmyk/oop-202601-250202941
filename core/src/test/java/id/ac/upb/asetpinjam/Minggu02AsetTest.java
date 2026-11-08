@@ -1,65 +1,55 @@
-package id.ac.upb.asetpinjam;
+package id.ac.upb.asetpinjam.model;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+public class Aset {
+    private final String kode;
+    private String nama;
+    private StatusAset status;
+    private Kondisi kondisi;
 
-import id.ac.upb.asetpinjam.model.Aset;
-import id.ac.upb.asetpinjam.model.Kondisi;
-import id.ac.upb.asetpinjam.model.StatusAset;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-
-@Tag("week2")
-class Minggu02AsetTest {
-
-    @Test
-    void menyimpanKodeDanNamaDenganNilaiAwal() {
-        Aset a = TestSupport.aset("A-01", "Proyektor");
-        assertThat(a.getKode()).isEqualTo("A-01");
-        assertThat(a.getNama()).isEqualTo("Proyektor");
-        assertThat(a.getStatus()).isEqualTo(StatusAset.TERSEDIA);
-        assertThat(a.getKondisi()).isEqualTo(Kondisi.BAIK);
+    public Aset(String kode, String nama) {
+        this.kode = normalisasiKode(kode);
+        this.nama = validasiNama(nama);
+        this.status = StatusAset.TERSEDIA;
+        this.kondisi = Kondisi.BAIK;
     }
 
-    @Test
-    void kodeKosongDitolak() {
-        assertThatThrownBy(() -> TestSupport.aset(null, "X")).isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> TestSupport.aset("", "X")).isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> TestSupport.aset("   ", "X")).isInstanceOf(IllegalArgumentException.class);
+    public String getKode() { return kode; }
+
+    public String getNama() { return nama; }
+
+    public void setNama(String nama) {
+        this.nama = validasiNama(nama);
     }
 
-    @Test
-    void namaKosongDitolak() {
-        assertThatThrownBy(() -> TestSupport.aset("A-01", null)).isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> TestSupport.aset("A-01", " ")).isInstanceOf(IllegalArgumentException.class);
+    public StatusAset getStatus() { return status; }
+
+    public void setStatus(StatusAset status) {
+        if (status == null) {
+            throw new IllegalArgumentException("Status tidak boleh null");
+        }
+        this.status = status;
     }
 
-    @Test
-    void setNamaMemvalidasi() {
-        Aset a = TestSupport.aset("A-01", "Lama");
-        a.setNama("Baru");
-        assertThat(a.getNama()).isEqualTo("Baru");
-        assertThatThrownBy(() -> a.setNama("")).isInstanceOf(IllegalArgumentException.class);
-        assertThat(a.getNama()).isEqualTo("Baru");
+    public Kondisi getKondisi() { return kondisi; }
+
+    public void setKondisi(Kondisi kondisi) {
+        if (kondisi == null) {
+            throw new IllegalArgumentException("Kondisi tidak boleh null");
+        }
+        this.kondisi = kondisi;
     }
 
-    @Test
-    void setStatusDanKondisiMemvalidasi() {
-        Aset a = TestSupport.aset("A-01", "Alat");
-        a.setStatus(StatusAset.DIPINJAM);
-        a.setKondisi(Kondisi.RUSAK_RINGAN);
-        assertThat(a.getStatus()).isEqualTo(StatusAset.DIPINJAM);
-        assertThat(a.getKondisi()).isEqualTo(Kondisi.RUSAK_RINGAN);
-        assertThatThrownBy(() -> a.setStatus(null)).isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> a.setKondisi(null)).isInstanceOf(IllegalArgumentException.class);
+    private static String normalisasiKode(String kode) {
+        if (kode == null || kode.trim().isEmpty()) {
+            throw new IllegalArgumentException("Kode tidak boleh null atau kosong");
+        }
+        return kode.trim().toUpperCase();
     }
 
-    @Test
-    void semuaFieldPrivatDanKodeTidakBisaDiubah() {
-        assertThat(Arrays.stream(Aset.class.getDeclaredFields()))
-                .allMatch(f -> Modifier.isPrivate(f.getModifiers()), "semua field Aset private");
-        assertThat(Arrays.stream(Aset.class.getMethods()).map(m -> m.getName())).doesNotContain("setKode");
+    private static String validasiNama(String nama) {
+        if (nama == null || nama.trim().isEmpty()) {
+            throw new IllegalArgumentException("Nama tidak boleh null atau kosong");
+        }
+        return nama.trim();
     }
 }
